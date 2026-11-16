@@ -1,0 +1,8 @@
+node_modules/
+.vercel/
+*.log
+
+# Rahasia, jangan di-commit
+.env
+.env.*
+!.env.example
