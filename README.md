@@ -120,7 +120,25 @@ Siapkan environment variables:
 cp .env.example .env
 ```
 
-Perintah untuk menjalankan server lokal dan test akan ditambahkan setelah implementasi dimulai.
+Install dependency (project ini memakai **pnpm**):
+
+```bash
+pnpm install
+```
+
+Jalankan unit test:
+
+```bash
+pnpm test
+```
+
+Atau jalankan test dalam mode watch selama development:
+
+```bash
+pnpm test:watch
+```
+
+Perintah untuk menjalankan server lokal akan ditambahkan setelah implementasi webhook selesai.
 
 ## Roadmap
 
