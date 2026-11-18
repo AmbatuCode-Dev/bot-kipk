@@ -6,3 +6,8 @@ node_modules/
 .env
 .env.*
 !.env.example
+
+# Kunci JSON Service Account Google
+service-account*.json
+*-sa.json
+sa-key*.json
