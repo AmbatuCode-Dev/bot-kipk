@@ -20,7 +20,7 @@ Prototipe bot WhatsApp yang menjawab pertanyaan yang sering diajukan (FAQ) mahas
 
 ## Tech Stack
 
-- **Runtime:** Node.js (LTS), JavaScript
+- **Runtime:** Node.js 22.12 atau lebih baru, JavaScript
 - **Kanal:** WhatsApp Cloud API (Meta)
 - **Data & admin panel:** Google Sheets (`googleapis`, akses read-only)
 - **Hosting:** Vercel Hobby untuk demo (Track A), VPS Indonesia untuk produksi (Track B)
