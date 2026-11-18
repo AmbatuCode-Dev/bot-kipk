@@ -14,5 +14,8 @@
   },
   "devDependencies": {
     "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "@googleapis/sheets": "^18.1.3"
   }
 }
