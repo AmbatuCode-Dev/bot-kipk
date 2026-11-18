@@ -20,7 +20,7 @@ Prototipe bot WhatsApp yang menjawab pertanyaan yang sering diajukan (FAQ) mahas
 
 ## Tech Stack
 
-- **Runtime:** Node.js (LTS), JavaScript
+- **Runtime:** Node.js 22.12 atau lebih baru, JavaScript
 - **Kanal:** WhatsApp Cloud API (Meta)
 - **Data & admin panel:** Google Sheets (`googleapis`, akses read-only)
 - **Hosting:** Vercel Hobby untuk demo (Track A), VPS Indonesia untuk produksi (Track B)
@@ -120,7 +120,25 @@ Siapkan environment variables:
 cp .env.example .env
 ```
 
-Perintah untuk menjalankan server lokal dan test akan ditambahkan setelah implementasi dimulai.
+Install dependency (project ini memakai **pnpm**):
+
+```bash
+pnpm install
+```
+
+Jalankan unit test:
+
+```bash
+pnpm test
+```
+
+Atau jalankan test dalam mode watch selama development:
+
+```bash
+pnpm test:watch
+```
+
+Perintah untuk menjalankan server lokal akan ditambahkan setelah implementasi webhook selesai.
 
 ## Roadmap
 
