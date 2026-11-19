@@ -93,4 +93,22 @@ describe('formatMenu', () => {
       ].join('\n'),
     );
   });
+
+  it('menyatukan kategori yang sama walaupun ID-nya tidak berurutan', () => {
+    const faqs = [
+      faq(1, 'Pencairan', 'Kapan dana cair?'),
+      faq(2, 'Pendaftaran', 'Apa saja syaratnya?'),
+      faq(3, 'Pencairan', 'Kenapa dana belum masuk?'),
+    ];
+    expect(formatMenu(faqs)).toBe(
+      [
+        '*Pencairan*',
+        '1. Kapan dana cair?',
+        '3. Kenapa dana belum masuk?',
+        '',
+        '*Pendaftaran*',
+        '2. Apa saja syaratnya?',
+      ].join('\n'),
+    );
+  });
 });

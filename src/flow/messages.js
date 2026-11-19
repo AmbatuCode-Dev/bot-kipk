@@ -31,17 +31,16 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
  * @returns {string}
  */
 export function formatMenu(faqs) {
-  const kelompok = [];
+  // Map menjaga urutan kategori sesuai kemunculan pertamanya
+  const kelompok = new Map();
   for (const faq of faqs) {
-    const terakhir = kelompok.at(-1);
-    const baris = `${faq.id}. ${faq.pertanyaan}`;
-    if (terakhir?.kategori === faq.kategori) {
-      terakhir.baris.push(baris);
-    } else {
-      kelompok.push({ kategori: faq.kategori, baris: [baris] });
-    }
+    const baris = kelompok.get(faq.kategori) ?? [];
+    baris.push(`${faq.id}. ${faq.pertanyaan}`);
+    kelompok.set(faq.kategori, baris);
   }
-  return kelompok.map(({ kategori, baris }) => [`*${kategori}*`, ...baris].join('\n')).join('\n\n');
+  return [...kelompok]
+    .map(([kategori, baris]) => [`*${kategori}*`, ...baris].join('\n'))
+    .join('\n\n');
 }
 
 /** Kalimat penutup setiap jawaban FAQ. */
