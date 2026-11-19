@@ -58,6 +58,11 @@ describe('findBestFaq', () => {
     expect(findBestFaq(faqs, 'kapan', { threshold: 2 })).toBeNull();
   });
 
+  it('memenangkan ID terkecil jika skor seri, apa pun urutannya', () => {
+    const faqs = [faq(['kapan'], 5), faq(['kapan'], 2), faq(['kapan'], 9)];
+    expect(findBestFaq(faqs, 'kapan pencairan')?.id).toBe(2);
+  });
+
   it('mengembalikan null untuk daftar FAQ kosong', () => {
     expect(findBestFaq([], 'kapan pencairan')).toBeNull();
   });
