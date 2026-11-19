@@ -3,7 +3,9 @@ import {
   BATAS_PANJANG,
   PESAN_BUKAN_TEKS,
   PESAN_GANGGUAN,
+  PENUTUP_JAWABAN,
   batasiPanjang,
+  formatJawaban,
 } from '../../src/flow/messages.js';
 
 // Cara menghitung sama dengan WA Client (Dev A): per code point, bukan per unit UTF-16
@@ -43,5 +45,17 @@ describe('teks fallback', () => {
 
   it('PESAN_BUKAN_TEKS mengarahkan mahasiswa mengetik "menu"', () => {
     expect(PESAN_BUKAN_TEKS.toLowerCase()).toContain('menu');
+  });
+});
+
+describe('formatJawaban', () => {
+  // Bentuknya sama persis dengan item dari faqStore.getAll() (Dev A)
+  const faq = (jawaban) => ({ id: 1, kategori: 'Pencairan', keywords: ['cair'], jawaban });
+
+  it('menampilkan jawaban FAQ lalu petunjuk kembali ke menu', () => {
+    expect(formatJawaban(faq('Dana cair setiap awal semester.'))).toBe(
+      `Dana cair setiap awal semester.\n\n${PENUTUP_JAWABAN}`,
+    );
+    expect(PENUTUP_JAWABAN.toLowerCase()).toContain('menu');
   });
 });

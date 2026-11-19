@@ -23,3 +23,15 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
   if (karakter.length <= maks) return teks;
   return `${karakter.slice(0, maks - 1).join('')}…`;
 }
+
+/** Kalimat penutup setiap jawaban FAQ. */
+export const PENUTUP_JAWABAN = 'Ketik *menu* untuk melihat daftar pertanyaan lain.';
+
+/**
+ * Menyusun balasan untuk satu FAQ.
+ * @param {{ jawaban: string }} faq item dari faqStore.getAll()
+ * @returns {string}
+ */
+export function formatJawaban(faq) {
+  return `${faq.jawaban}\n\n${PENUTUP_JAWABAN}`;
+}
