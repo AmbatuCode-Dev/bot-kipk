@@ -28,10 +28,13 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
 export const PENUTUP_JAWABAN = 'Ketik *menu* untuk melihat daftar pertanyaan lain.';
 
 /**
- * Menyusun balasan untuk satu FAQ.
+ * Menyusun balasan untuk satu FAQ. Jawaban yang terlalu panjang dipotong
+ * lebih dulu, sehingga kalimat penutup tetap terkirim utuh.
  * @param {{ jawaban: string }} faq item dari faqStore.getAll()
  * @returns {string}
  */
 export function formatJawaban(faq) {
-  return `${faq.jawaban}\n\n${PENUTUP_JAWABAN}`;
+  const pemisah = '\n\n';
+  const ruangJawaban = BATAS_PANJANG - [...pemisah].length - [...PENUTUP_JAWABAN].length;
+  return `${batasiPanjang(faq.jawaban, ruangJawaban)}${pemisah}${PENUTUP_JAWABAN}`;
 }

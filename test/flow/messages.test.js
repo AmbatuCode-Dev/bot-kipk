@@ -58,4 +58,10 @@ describe('formatJawaban', () => {
     );
     expect(PENUTUP_JAWABAN.toLowerCase()).toContain('menu');
   });
+
+  it('memotong jawaban yang terlalu panjang tanpa menghilangkan petunjuk menu', () => {
+    const hasil = formatJawaban(faq('x'.repeat(5000)));
+    expect(panjang(hasil)).toBeLessThanOrEqual(BATAS_PANJANG);
+    expect(hasil.endsWith(`…\n\n${PENUTUP_JAWABAN}`)).toBe(true);
+  });
 });
