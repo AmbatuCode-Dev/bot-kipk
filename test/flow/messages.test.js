@@ -139,4 +139,13 @@ describe('pesanSapaan', () => {
     expect(posisiNotice).toBeGreaterThanOrEqual(0);
     expect(posisiMenu).toBeGreaterThan(posisiNotice);
   });
+
+  it('tetap muat dalam satu pesan walaupun FAQ aktifnya sangat banyak', () => {
+    const banyak = Array.from({ length: 200 }, (_x, i) => ({
+      ...faqs[0],
+      id: i + 1,
+      pertanyaan: `Pertanyaan contoh yang cukup panjang nomor ${i + 1}?`,
+    }));
+    expect(panjang(pesanSapaan(banyak))).toBeLessThanOrEqual(BATAS_PANJANG);
+  });
 });

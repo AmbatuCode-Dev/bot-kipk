@@ -76,9 +76,11 @@ const PENGANTAR_MENU = 'Ketik nomor pertanyaan di bawah ini, atau tulis pertanya
 
 /**
  * Balasan untuk sapaan atau kata "menu": salam, notice privasi, lalu daftar menu.
+ * Menu berada paling akhir, jadi bila FAQ aktif terlalu banyak, hanya ujung
+ * menu yang terpotong, sementara notice privasi tetap terkirim.
  * @param {ReadonlyArray<{ id: number, kategori: string, pertanyaan: string }>} faqs hasil faqStore.getAll()
  * @returns {string}
  */
 export function pesanSapaan(faqs) {
-  return [SALAM, NOTICE_PRIVASI, PENGANTAR_MENU, formatMenu(faqs)].join('\n\n');
+  return batasiPanjang([SALAM, NOTICE_PRIVASI, PENGANTAR_MENU, formatMenu(faqs)].join('\n\n'));
 }
