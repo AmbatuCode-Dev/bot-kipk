@@ -24,6 +24,9 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
   return `${karakter.slice(0, maks - 1).join('')}…`;
 }
 
+/** Pengganti daftar menu saat tidak ada satu pun FAQ yang aktif. */
+export const PESAN_MENU_KOSONG = 'Saat ini belum ada pertanyaan yang tersedia.';
+
 /** Judul kelompok menu untuk FAQ yang kolom Kategori-nya dikosongkan Humas. */
 const KATEGORI_CADANGAN = 'Lainnya';
 
@@ -34,6 +37,8 @@ const KATEGORI_CADANGAN = 'Lainnya';
  * @returns {string}
  */
 export function formatMenu(faqs) {
+  if (faqs.length === 0) return PESAN_MENU_KOSONG;
+
   // Map menjaga urutan kategori sesuai kemunculan pertamanya
   const kelompok = new Map();
   for (const faq of faqs) {

@@ -3,6 +3,7 @@ import {
   BATAS_PANJANG,
   PESAN_BUKAN_TEKS,
   PESAN_GANGGUAN,
+  PESAN_MENU_KOSONG,
   PENUTUP_JAWABAN,
   batasiPanjang,
   formatJawaban,
@@ -116,5 +117,10 @@ describe('formatMenu', () => {
     expect(formatMenu([faq(4, '', 'Siapa yang bisa dihubungi?')])).toBe(
       '*Lainnya*\n4. Siapa yang bisa dihubungi?',
     );
+  });
+
+  it('memberi tahu bila belum ada FAQ aktif, bukan mengirim menu kosong', () => {
+    expect(formatMenu([])).toBe(PESAN_MENU_KOSONG);
+    expect(PESAN_MENU_KOSONG.trim()).not.toBe('');
   });
 });
