@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { scoreFaq } from '../../src/flow/matcher.js';
+import { findBestFaq, scoreFaq } from '../../src/flow/matcher.js';
 
 // Bentuknya sama persis dengan item dari faqStore.getAll() (Dev A)
 const faq = (keywords, id = 1) => ({
@@ -40,5 +40,25 @@ describe('scoreFaq', () => {
 
   it('menghitung kata kunci yang sama hanya sekali', () => {
     expect(scoreFaq(faq(['pencairan', 'Pencairan']), 'kapan pencairan')).toBe(1);
+  });
+});
+
+describe('findBestFaq', () => {
+  it('memilih FAQ dengan skor tertinggi', () => {
+    const faqs = [faq(['kapan'], 1), faq(['kapan', 'pencairan'], 2)];
+    expect(findBestFaq(faqs, 'kapan pencairan')?.id).toBe(2);
+  });
+
+  it('mengembalikan null jika tidak ada kata kunci yang cocok', () => {
+    expect(findBestFaq([faq(['pencairan'], 1)], 'halo kak')).toBeNull();
+  });
+
+  it('mengembalikan null jika skor tertinggi di bawah ambang', () => {
+    const faqs = [faq(['kapan', 'pencairan'], 1)];
+    expect(findBestFaq(faqs, 'kapan', { threshold: 2 })).toBeNull();
+  });
+
+  it('mengembalikan null untuk daftar FAQ kosong', () => {
+    expect(findBestFaq([], 'kapan pencairan')).toBeNull();
   });
 });

@@ -18,3 +18,24 @@ export function scoreFaq(faq, normalizedText) {
   const keywords = new Set(faq.keywords.map(normalize).filter((keyword) => keyword !== ''));
   return [...keywords].filter((keyword) => pesan.includes(` ${keyword} `)).length;
 }
+
+/**
+ * Memilih FAQ yang paling cocok dengan pesan mahasiswa.
+ *
+ * @param {ReadonlyArray<{ id: number, keywords: readonly string[] }>} faqs hasil faqStore.getAll()
+ * @param {string} normalizedText pesan yang sudah melewati normalize()
+ * @param {{ threshold?: number }} [opsi] skor minimal agar dianggap cocok (bawaan 1)
+ * @returns {object | null} FAQ dengan skor tertinggi, atau null jika tidak ada yang mencapai ambang
+ */
+export function findBestFaq(faqs, normalizedText, { threshold = 1 } = {}) {
+  let terbaik = null;
+  let skorTerbaik = 0;
+  for (const faq of faqs) {
+    const skor = scoreFaq(faq, normalizedText);
+    if (skor > skorTerbaik) {
+      terbaik = faq;
+      skorTerbaik = skor;
+    }
+  }
+  return skorTerbaik >= threshold ? terbaik : null;
+}
