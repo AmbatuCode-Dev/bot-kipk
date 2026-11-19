@@ -29,4 +29,8 @@ describe('scoreFaq', () => {
   it('tidak mencocokkan frasa yang katanya terpisah', () => {
     expect(scoreFaq(faq(['uang kuliah']), 'uang saya untuk kuliah')).toBe(0);
   });
+
+  it('menormalisasi kata kunci sebelum dicocokkan', () => {
+    expect(scoreFaq(faq(['Daftar-Ulang', 'KIP-K']), 'cara daftar ulang kip k')).toBe(2);
+  });
 });
