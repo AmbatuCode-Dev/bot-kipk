@@ -15,5 +15,6 @@ import { normalize } from './normalize.js';
  */
 export function scoreFaq(faq, normalizedText) {
   const pesan = ` ${normalizedText} `;
-  return faq.keywords.filter((keyword) => pesan.includes(` ${normalize(keyword)} `)).length;
+  const keywords = new Set(faq.keywords.map(normalize).filter((keyword) => keyword !== ''));
+  return [...keywords].filter((keyword) => pesan.includes(` ${keyword} `)).length;
 }

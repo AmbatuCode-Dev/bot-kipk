@@ -33,4 +33,12 @@ describe('scoreFaq', () => {
   it('menormalisasi kata kunci sebelum dicocokkan', () => {
     expect(scoreFaq(faq(['Daftar-Ulang', 'KIP-K']), 'cara daftar ulang kip k')).toBe(2);
   });
+
+  it('mengabaikan kata kunci yang kosong setelah dinormalisasi', () => {
+    expect(scoreFaq(faq(['??']), '')).toBe(0);
+  });
+
+  it('menghitung kata kunci yang sama hanya sekali', () => {
+    expect(scoreFaq(faq(['pencairan', 'Pencairan']), 'kapan pencairan')).toBe(1);
+  });
 });
