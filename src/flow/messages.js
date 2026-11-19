@@ -24,6 +24,9 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
   return `${karakter.slice(0, maks - 1).join('')}…`;
 }
 
+/** Judul kelompok menu untuk FAQ yang kolom Kategori-nya dikosongkan Humas. */
+const KATEGORI_CADANGAN = 'Lainnya';
+
 /**
  * Menyusun daftar menu: FAQ dikelompokkan per kategori, nomornya memakai ID
  * sehingga mahasiswa cukup mengetik angka itu untuk membuka jawabannya.
@@ -34,9 +37,10 @@ export function formatMenu(faqs) {
   // Map menjaga urutan kategori sesuai kemunculan pertamanya
   const kelompok = new Map();
   for (const faq of faqs) {
-    const baris = kelompok.get(faq.kategori) ?? [];
+    const kategori = faq.kategori || KATEGORI_CADANGAN;
+    const baris = kelompok.get(kategori) ?? [];
     baris.push(`${faq.id}. ${faq.pertanyaan}`);
-    kelompok.set(faq.kategori, baris);
+    kelompok.set(kategori, baris);
   }
   return [...kelompok]
     .map(([kategori, baris]) => [`*${kategori}*`, ...baris].join('\n'))

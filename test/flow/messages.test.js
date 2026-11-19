@@ -111,4 +111,10 @@ describe('formatMenu', () => {
       ].join('\n'),
     );
   });
+
+  it('memasukkan FAQ tanpa kategori ke kelompok "Lainnya"', () => {
+    expect(formatMenu([faq(4, '', 'Siapa yang bisa dihubungi?')])).toBe(
+      '*Lainnya*\n4. Siapa yang bisa dihubungi?',
+    );
+  });
 });
