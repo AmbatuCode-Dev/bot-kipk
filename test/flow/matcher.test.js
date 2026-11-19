@@ -21,4 +21,12 @@ describe('scoreFaq', () => {
   it('menjumlahkan setiap kata kunci yang cocok', () => {
     expect(scoreFaq(faq(['pencairan', 'kapan', 'rekening']), 'kapan pencairan')).toBe(2);
   });
+
+  it('mencocokkan kata kunci frasa yang muncul berurutan', () => {
+    expect(scoreFaq(faq(['uang kuliah']), 'kapan uang kuliah cair')).toBe(1);
+  });
+
+  it('tidak mencocokkan frasa yang katanya terpisah', () => {
+    expect(scoreFaq(faq(['uang kuliah']), 'uang saya untuk kuliah')).toBe(0);
+  });
 });
