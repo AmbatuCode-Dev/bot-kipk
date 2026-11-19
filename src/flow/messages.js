@@ -24,6 +24,26 @@ export function batasiPanjang(teks, maks = BATAS_PANJANG) {
   return `${karakter.slice(0, maks - 1).join('')}…`;
 }
 
+/**
+ * Menyusun daftar menu: FAQ dikelompokkan per kategori, nomornya memakai ID
+ * sehingga mahasiswa cukup mengetik angka itu untuk membuka jawabannya.
+ * @param {ReadonlyArray<{ id: number, kategori: string, pertanyaan: string }>} faqs hasil faqStore.getAll()
+ * @returns {string}
+ */
+export function formatMenu(faqs) {
+  const kelompok = [];
+  for (const faq of faqs) {
+    const terakhir = kelompok.at(-1);
+    const baris = `${faq.id}. ${faq.pertanyaan}`;
+    if (terakhir?.kategori === faq.kategori) {
+      terakhir.baris.push(baris);
+    } else {
+      kelompok.push({ kategori: faq.kategori, baris: [baris] });
+    }
+  }
+  return kelompok.map(({ kategori, baris }) => [`*${kategori}*`, ...baris].join('\n')).join('\n\n');
+}
+
 /** Kalimat penutup setiap jawaban FAQ. */
 export const PENUTUP_JAWABAN = 'Ketik *menu* untuk melihat daftar pertanyaan lain.';
 

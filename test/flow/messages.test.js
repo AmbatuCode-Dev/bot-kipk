@@ -6,6 +6,7 @@ import {
   PENUTUP_JAWABAN,
   batasiPanjang,
   formatJawaban,
+  formatMenu,
 } from '../../src/flow/messages.js';
 
 // Cara menghitung sama dengan WA Client (Dev A): per code point, bukan per unit UTF-16
@@ -63,5 +64,33 @@ describe('formatJawaban', () => {
     const hasil = formatJawaban(faq('x'.repeat(5000)));
     expect(panjang(hasil)).toBeLessThanOrEqual(BATAS_PANJANG);
     expect(hasil.endsWith(`…\n\n${PENUTUP_JAWABAN}`)).toBe(true);
+  });
+});
+
+describe('formatMenu', () => {
+  const faq = (id, kategori, pertanyaan) => ({
+    id,
+    kategori,
+    pertanyaan,
+    keywords: ['contoh'],
+    jawaban: 'Jawaban contoh',
+  });
+
+  it('menampilkan pertanyaan bernomor ID di bawah judul kategori', () => {
+    const faqs = [
+      faq(1, 'Pencairan', 'Kapan dana cair?'),
+      faq(2, 'Pencairan', 'Kenapa dana belum masuk?'),
+      faq(3, 'Pendaftaran', 'Apa saja syaratnya?'),
+    ];
+    expect(formatMenu(faqs)).toBe(
+      [
+        '*Pencairan*',
+        '1. Kapan dana cair?',
+        '2. Kenapa dana belum masuk?',
+        '',
+        '*Pendaftaran*',
+        '3. Apa saja syaratnya?',
+      ].join('\n'),
+    );
   });
 });
