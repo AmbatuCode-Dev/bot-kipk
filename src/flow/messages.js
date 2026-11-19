@@ -3,6 +3,14 @@
 /** Batas panjang satu pesan teks WhatsApp Cloud API. */
 export const BATAS_PANJANG = 4096;
 
+/** Balasan untuk pesan selain teks (gambar, stiker, suara, dokumen, dan lainnya). */
+export const PESAN_BUKAN_TEKS =
+  'Maaf, bot ini hanya bisa membaca pesan teks. Ketik *menu* untuk melihat daftar pertanyaan yang bisa dijawab.';
+
+/** Balasan saat data FAQ tidak bisa diambil (Google Sheets gagal dan belum ada cache). */
+export const PESAN_GANGGUAN =
+  'Maaf, bot sedang mengalami gangguan sehingga belum bisa menjawab. Silakan coba lagi beberapa saat lagi.';
+
 /**
  * Memastikan teks tidak melebihi batas WhatsApp. Dihitung per code point,
  * sama seperti WA Client, sehingga emoji tidak terbelah di tengah.
