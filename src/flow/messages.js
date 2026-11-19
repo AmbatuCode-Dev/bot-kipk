@@ -66,3 +66,19 @@ export function formatJawaban(faq) {
   const ruangJawaban = BATAS_PANJANG - [...pemisah].length - [...PENUTUP_JAWABAN].length;
   return `${batasiPanjang(faq.jawaban, ruangJawaban)}${pemisah}${PENUTUP_JAWABAN}`;
 }
+
+/** Isi harus sesuai data yang benar-benar dicatat sistem (log Dev A menyamarkan nomor). */
+export const NOTICE_PRIVASI =
+  'Bot ini hanya membaca pesanmu untuk mencarikan jawaban FAQ. Isi pesan tidak disimpan, dan nomor WhatsApp-mu hanya dicatat dalam bentuk yang sudah disamarkan untuk keperluan pemantauan sistem. Pesan tetap dikirim melalui layanan WhatsApp (Meta) sesuai kebijakan privasi WhatsApp.';
+
+const SALAM = 'Halo! Selamat datang di layanan FAQ Forum KIP-Kuliah UNJ.';
+const PENGANTAR_MENU = 'Ketik nomor pertanyaan di bawah ini, atau tulis pertanyaanmu langsung.';
+
+/**
+ * Balasan untuk sapaan atau kata "menu": salam, notice privasi, lalu daftar menu.
+ * @param {ReadonlyArray<{ id: number, kategori: string, pertanyaan: string }>} faqs hasil faqStore.getAll()
+ * @returns {string}
+ */
+export function pesanSapaan(faqs) {
+  return [SALAM, NOTICE_PRIVASI, PENGANTAR_MENU, formatMenu(faqs)].join('\n\n');
+}

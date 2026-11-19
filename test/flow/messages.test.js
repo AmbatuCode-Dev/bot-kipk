@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BATAS_PANJANG,
+  NOTICE_PRIVASI,
   PESAN_BUKAN_TEKS,
   PESAN_GANGGUAN,
   PESAN_MENU_KOSONG,
@@ -8,6 +9,7 @@ import {
   batasiPanjang,
   formatJawaban,
   formatMenu,
+  pesanSapaan,
 } from '../../src/flow/messages.js';
 
 // Cara menghitung sama dengan WA Client (Dev A): per code point, bukan per unit UTF-16
@@ -122,5 +124,19 @@ describe('formatMenu', () => {
   it('memberi tahu bila belum ada FAQ aktif, bukan mengirim menu kosong', () => {
     expect(formatMenu([])).toBe(PESAN_MENU_KOSONG);
     expect(PESAN_MENU_KOSONG.trim()).not.toBe('');
+  });
+});
+
+describe('pesanSapaan', () => {
+  const faqs = [
+    { id: 1, kategori: 'Pencairan', pertanyaan: 'Kapan dana cair?', keywords: ['cair'], jawaban: 'Jawaban' },
+  ];
+
+  it('memuat notice privasi sebelum daftar menu', () => {
+    const pesan = pesanSapaan(faqs);
+    const posisiNotice = pesan.indexOf(NOTICE_PRIVASI);
+    const posisiMenu = pesan.indexOf(formatMenu(faqs));
+    expect(posisiNotice).toBeGreaterThanOrEqual(0);
+    expect(posisiMenu).toBeGreaterThan(posisiNotice);
   });
 });
