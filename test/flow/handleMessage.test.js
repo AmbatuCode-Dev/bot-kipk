@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { handleMessage } from '../../src/flow/handleMessage.js';
-import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN } from '../../src/flow/messages.js';
+import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, pesanSapaan } from '../../src/flow/messages.js';
+
+// Bentuknya sama persis dengan hasil faqStore.getAll() (canvas bagian 4–5)
+const FAQS = Object.freeze([
+  { id: 1, kategori: 'Pencairan', pertanyaan: 'Kapan dana KIP-K cair?', keywords: ['pencairan', 'cair'], jawaban: 'Dana cair bertahap.' },
+  { id: 2, kategori: 'Syarat', pertanyaan: 'Apa syarat daftar ulang?', keywords: ['syarat', 'daftar ulang'], jawaban: 'Siapkan berkas A dan B.' },
+  { id: 3, kategori: 'Rekening', pertanyaan: 'Rekening saya bermasalah', keywords: ['rekening', 'bank'], jawaban: 'Hubungi bank penyalur.' },
+]);
 
 // Bentuknya sama persis dengan ctx dari Dev A (canvas bagian 5)
 const ctx = (text, type = 'text') => ({
@@ -31,4 +38,12 @@ describe('handleMessage', () => {
     const hasil = await handleMessage(ctx('kapan pencairan?'), storeRusak());
     expect(hasil).toEqual({ body: PESAN_GANGGUAN });
   });
+
+  it.each(['Halo kak!', 'menu', 'MENU', 'Assalamualaikum', "Assalamu'alaikum wr wb", 'Selamat pagi min', 'hai'])(
+    'membalas "%s" dengan sapaan dan daftar menu',
+    async (teks) => {
+      const hasil = await handleMessage(ctx(teks), storeBerisi(FAQS));
+      expect(hasil).toEqual({ body: pesanSapaan(FAQS) });
+    },
+  );
 });
