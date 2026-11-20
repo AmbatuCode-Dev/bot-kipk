@@ -7,6 +7,9 @@ const BATAS_BODY_BYTE = 1024 * 1024;
 const PANJANG_TANTANGAN_MAKS = 256;
 const PESAN_DARURAT = 'Maaf, sedang terjadi gangguan. Silakan coba lagi beberapa saat lagi.';
 
+/** Kode WaClientError untuk body yang ditolak sebelum dikirim, sehingga pesan darurat aman dikirim sebagai gantinya. */
+const KODE_BODY_DITOLAK = new Set(['BODY_KOSONG', 'BODY_TERLALU_PANJANG']);
+
 function respons(status, isi, header = {}) {
   return new Response(isi, {
     status,
@@ -85,11 +88,30 @@ export function createWebhook({ config, handleMessage, deps, waClient, logger, p
       jalur = 'darurat';
     }
 
+    await kirimBalasan(ctx, pengirim, body, jalur, mulai);
+  }
+
+  /**
+   * Mengirim balasan. Bila body ditolak sebelum sampai ke jaringan (kosong atau
+   * lebih dari 4096 karakter), mahasiswa menerima pesan darurat agar tidak
+   * dibiarkan tanpa jawaban. Kegagalan jaringan tidak dicoba lagi dengan pesan
+   * darurat, karena permintaan pertama bisa saja sudah terkirim.
+   */
+  async function kirimBalasan(ctx, pengirim, body, jalur, mulai) {
     try {
       await waClient.sendText(ctx.from, body);
       logger.info('balasan_terkirim', { messageId: ctx.messageId, pengirim, tipe: ctx.type, jalur, durasiMs: now() - mulai });
+      return;
     } catch (err) {
       logger.error('balasan_gagal', { messageId: ctx.messageId, pengirim, jalur, ...ringkasError(err) });
+      if (jalur === 'darurat' || !KODE_BODY_DITOLAK.has(err?.code)) return;
+    }
+
+    try {
+      await waClient.sendText(ctx.from, PESAN_DARURAT);
+      logger.info('balasan_terkirim', { messageId: ctx.messageId, pengirim, tipe: ctx.type, jalur: 'darurat', durasiMs: now() - mulai });
+    } catch (err) {
+      logger.error('balasan_gagal', { messageId: ctx.messageId, pengirim, jalur: 'darurat', ...ringkasError(err) });
     }
   }
 

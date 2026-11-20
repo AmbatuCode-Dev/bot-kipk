@@ -235,6 +235,52 @@ describe('POST: kegagalan di dalam pemrosesan', () => {
     expect(logger.catatan.find((c) => c.pesan === 'balasan_gagal')).toMatchObject({ level: 'error', statusHttp: 400, kodeError: 131030 });
   });
 
+  it('mengirim pesan darurat bila body dari handler ditolak karena melebihi 4096 karakter', async () => {
+    const ditolak = Object.assign(new Error('Body pesan melebihi 4096 karakter'), { code: 'BODY_TERLALU_PANJANG' });
+    const waClient = { sendText: vi.fn().mockRejectedValueOnce(ditolak).mockResolvedValueOnce({ messageId: 'wamid.darurat' }) };
+    const { webhook, logger } = siapkan({ waClient, handleMessage: vi.fn(async () => ({ body: 'x'.repeat(5000) })) });
+
+    const res = await webhook(postBertandatangan(payloadPesan()));
+
+    expect(res.status).toBe(200);
+    expect(waClient.sendText).toHaveBeenCalledTimes(2);
+    expect(waClient.sendText).toHaveBeenNthCalledWith(2, NOMOR_PENGIRIM, expect.stringContaining('gangguan'));
+    expect(logger.catatan.find((c) => c.pesan === 'balasan_gagal')).toMatchObject({ jalur: 'handler', kodeError: 'BODY_TERLALU_PANJANG' });
+    expect(logger.catatan.find((c) => c.pesan === 'balasan_terkirim')).toMatchObject({ jalur: 'darurat' });
+  });
+
+  it('tidak mengirim pesan darurat bila kegagalan berasal dari jaringan, agar tidak terkirim dua kali', async () => {
+    const jaringan = Object.assign(new Error('Gagal menghubungi Cloud API'), { code: 'JARINGAN' });
+    const waClient = { sendText: vi.fn(async () => { throw jaringan; }) };
+    const { webhook } = siapkan({ waClient });
+
+    await webhook(postBertandatangan(payloadPesan()));
+
+    expect(waClient.sendText).toHaveBeenCalledTimes(1);
+  });
+
+  it('berhenti setelah satu kali mencoba bila pesan darurat sendiri juga gagal', async () => {
+    const ditolak = Object.assign(new Error('terlalu panjang'), { code: 'BODY_TERLALU_PANJANG' });
+    const waClient = { sendText: vi.fn(async () => { throw ditolak; }) };
+    const { webhook, logger } = siapkan({ waClient });
+
+    const res = await webhook(postBertandatangan(payloadPesan()));
+
+    expect(res.status).toBe(200);
+    expect(waClient.sendText).toHaveBeenCalledTimes(2);
+    expect(logger.catatan.filter((c) => c.pesan === 'balasan_gagal')).toHaveLength(2);
+  });
+
+  it('tidak mengulang pesan darurat bila pesan darurat dari jalur handler_gagal ditolak', async () => {
+    const ditolak = Object.assign(new Error('kosong'), { code: 'BODY_KOSONG' });
+    const waClient = { sendText: vi.fn(async () => { throw ditolak; }) };
+    const { webhook } = siapkan({ waClient, handleMessage: vi.fn(async () => { throw new Error('rusak'); }) });
+
+    await webhook(postBertandatangan(payloadPesan()));
+
+    expect(waClient.sendText).toHaveBeenCalledTimes(1);
+  });
+
   it('satu pesan yang gagal tidak menghentikan pesan berikutnya dalam payload yang sama', async () => {
     const handleMessage = vi.fn(async (ctx) => {
       if (ctx.messageId === 'wamid.1') throw new Error('rusak');
