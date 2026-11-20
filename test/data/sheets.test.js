@@ -13,13 +13,13 @@ describe('kutipNamaTab', () => {
 });
 
 describe('createSheetsReader', () => {
-  it('membaca A1:E pada tab yang dipilih dengan nilai terformat', async () => {
+  it('membaca A1:E pada tab yang dipilih dengan nilai mentah', async () => {
     const get = vi.fn(async () => ({ data: { values: [['ID'], ['1']] } }));
     const baca = createSheetsReader({ credentials: KREDENSIAL_UJI, sheetId: 'sheet-123', sheetTab: 'Data FAQ', klien: { spreadsheets: { values: { get } } } });
 
     expect(await baca()).toEqual([['ID'], ['1']]);
     expect(get).toHaveBeenCalledWith(
-      { spreadsheetId: 'sheet-123', range: "'Data FAQ'!A1:E", majorDimension: 'ROWS', valueRenderOption: 'FORMATTED_VALUE' },
+      { spreadsheetId: 'sheet-123', range: "'Data FAQ'!A1:E", majorDimension: 'ROWS', valueRenderOption: 'UNFORMATTED_VALUE' },
       { timeout: 8000 },
     );
   });

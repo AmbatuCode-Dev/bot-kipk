@@ -103,6 +103,35 @@ describe('parseFaq', () => {
     expect(logger.warn).not.toHaveBeenCalled();
   });
 
+  it('menerima nilai mentah dari Sheets: ID berupa angka dan Aktif berupa boolean checkbox', () => {
+    const logger = loggerUji();
+    const hasil = parseFaq(
+      [
+        HEADER,
+        [1, 'A', 'a', 'jawaban satu', true],
+        [1000, 'A', 'a', 'jawaban seribu', true],
+        [3, 'A', 'a', 'nonaktif', false],
+        [2026, 'A', 'a', 2026, true],
+      ],
+      { logger },
+    );
+
+    expect(hasil.map((f) => f.id)).toEqual([1, 1000, 2026]);
+    expect(hasil[2].jawaban).toBe('2026');
+    expect(logger.warn).not.toHaveBeenCalled();
+  });
+
+  it('menolak ID berupa angka pecahan, negatif, atau teks berformat ribuan', () => {
+    const logger = loggerUji();
+    const hasil = parseFaq(
+      [HEADER, [2.5, 'A', 'a', 'j', true], [-1, 'A', 'a', 'j', true], ['1.000', 'A', 'a', 'j', true]],
+      { logger },
+    );
+
+    expect(hasil).toEqual([]);
+    expect(logger.warn).toHaveBeenCalledTimes(3);
+  });
+
   it('menjadikan kata kunci kosong sebagai array kosong dan membuang elemen kosong', () => {
     const hasil = parseFaq([HEADER, ['1', 'A', '', 'j', 'TRUE'], ['2', 'A', ' , ,a,, ', 'j', 'TRUE']], { logger: loggerUji() });
 

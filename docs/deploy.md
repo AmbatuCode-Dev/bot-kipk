@@ -25,7 +25,7 @@ Perbedaan respons itu disengaja. Fungsi serverless dihentikan begitu respons dik
 1. Buat Service Account di Google Cloud dan aktifkan Google Sheets API pada project yang sama.
 2. Buat kunci JSON, lalu isi `GOOGLE_SA_JSON` dengan isi file itu dalam satu baris, atau base64-nya (`base64 -w0 service-account.json`).
 3. Bagikan Sheet ke alamat `client_email` Service Account sebagai **Viewer**. Jangan bagikan akses Editor.
-4. Isi `SHEET_ID` dengan ID pada URL Sheet. Pastikan tab bernama `FAQ` (atau atur `SHEET_TAB`) dan baris pertama memuat header `ID, Kategori, Kata Kunci, Teks Jawaban, Aktif` berurutan.
+4. Isi `SHEET_ID` dengan ID pada URL Sheet. Pastikan tab bernama `FAQ` (atau atur `SHEET_TAB`) dan baris pertama memuat header `ID, Kategori, Kata Kunci, Teks Jawaban, Aktif` berurutan. Format sel tidak berpengaruh karena nilai dibaca mentah: kolom `ID` boleh berformat angka, dan kolom `Aktif` boleh berupa checkbox atau teks `TRUE`/`FALSE`.
 5. Verifikasi dari komputer lokal: `pnpm cek:sheets`.
 
 ## 3. Track A: Vercel
