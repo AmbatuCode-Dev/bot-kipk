@@ -1,5 +1,8 @@
 import { normalize } from './normalize.js';
-import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, pesanSapaan } from './messages.js';
+import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, formatJawaban, pesanSapaan } from './messages.js';
+
+/** Pesan yang isinya hanya angka dianggap memilih nomor menu. */
+const POLA_ANGKA = /^\d+$/;
 
 /**
  * Kata yang membuat pesan dianggap sapaan atau permintaan menu, ditambah kata
@@ -42,5 +45,11 @@ export async function handleMessage(ctx, deps) {
   }
 
   if (adalahSapaan(teks)) return { body: pesanSapaan(faqs) };
+
+  if (POLA_ANGKA.test(teks)) {
+    const dipilih = faqs.find((faq) => faq.id === Number(teks));
+    if (dipilih) return { body: formatJawaban(dipilih) };
+  }
+
   return { body: PESAN_GANGGUAN };
 }

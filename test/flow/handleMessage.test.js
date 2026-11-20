@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { handleMessage } from '../../src/flow/handleMessage.js';
-import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, pesanSapaan } from '../../src/flow/messages.js';
+import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, formatJawaban, pesanSapaan } from '../../src/flow/messages.js';
 
 // Bentuknya sama persis dengan hasil faqStore.getAll() (canvas bagian 4–5)
 const FAQS = Object.freeze([
@@ -46,4 +46,9 @@ describe('handleMessage', () => {
       expect(hasil).toEqual({ body: pesanSapaan(FAQS) });
     },
   );
+
+  it.each(['2', '2.', ' 2 ', '02'])('membalas angka "%s" dengan jawaban FAQ ber-ID itu', async (teks) => {
+    const hasil = await handleMessage(ctx(teks), storeBerisi(FAQS));
+    expect(hasil).toEqual({ body: formatJawaban(FAQS[1]) });
+  });
 });
