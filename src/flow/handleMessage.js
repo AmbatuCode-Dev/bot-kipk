@@ -1,6 +1,12 @@
 import { findBestFaq } from './matcher.js';
 import { normalize } from './normalize.js';
-import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, formatJawaban, pesanSapaan } from './messages.js';
+import {
+  PESAN_BUKAN_TEKS,
+  PESAN_GANGGUAN,
+  formatJawaban,
+  pesanSapaan,
+  pesanTidakDikenali,
+} from './messages.js';
 
 /** Pesan yang isinya hanya angka dianggap memilih nomor menu. */
 const POLA_ANGKA = /^\d+$/;
@@ -55,5 +61,5 @@ export async function handleMessage(ctx, deps) {
   const terbaik = findBestFaq(faqs, teks);
   if (terbaik) return { body: formatJawaban(terbaik) };
 
-  return { body: PESAN_GANGGUAN };
+  return { body: pesanTidakDikenali(faqs) };
 }

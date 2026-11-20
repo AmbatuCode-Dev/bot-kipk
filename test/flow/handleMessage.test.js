@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { handleMessage } from '../../src/flow/handleMessage.js';
-import { PESAN_BUKAN_TEKS, PESAN_GANGGUAN, formatJawaban, pesanSapaan } from '../../src/flow/messages.js';
+import {
+  PESAN_BUKAN_TEKS,
+  PESAN_GANGGUAN,
+  formatJawaban,
+  pesanSapaan,
+  pesanTidakDikenali,
+} from '../../src/flow/messages.js';
 
 // Bentuknya sama persis dengan hasil faqStore.getAll() (canvas bagian 4–5)
 const FAQS = Object.freeze([
@@ -64,5 +70,14 @@ describe('handleMessage', () => {
   it('menjawab pertanyaan yang diawali sapaan, bukan membalas menu', async () => {
     const hasil = await handleMessage(ctx('Halo kak, kapan dana cair?'), storeBerisi(FAQS));
     expect(hasil).toEqual({ body: formatJawaban(FAQS[0]) });
+  });
+
+  it.each([
+    ['pertanyaan di luar FAQ', 'boleh ikut 2 organisasi ga'],
+    ['nomor yang tidak ada di menu', '99'],
+    ['pesan berisi emoji saja', '👍🙏'],
+  ])('membalas %s dengan pesan tidak dikenali', async (_kasus, teks) => {
+    const hasil = await handleMessage(ctx(teks), storeBerisi(FAQS));
+    expect(hasil).toEqual({ body: pesanTidakDikenali(FAQS) });
   });
 });
