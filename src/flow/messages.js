@@ -94,10 +94,11 @@ const PEMBUKA_TIDAK_DIKENALI =
 
 /**
  * Balasan bila pesan bukan sapaan, bukan nomor menu, dan tidak cocok dengan
- * kata kunci FAQ mana pun.
+ * kata kunci FAQ mana pun. Menu berada paling akhir, jadi bila terlalu panjang
+ * hanya ujung menu yang terpotong.
  * @param {ReadonlyArray<{ id: number, kategori: string, pertanyaan: string }>} faqs hasil faqStore.getAll()
  * @returns {string}
  */
 export function pesanTidakDikenali(faqs) {
-  return [PEMBUKA_TIDAK_DIKENALI, INFO_LAYANAN_HUMAS, formatMenu(faqs)].join('\n\n');
+  return batasiPanjang([PEMBUKA_TIDAK_DIKENALI, INFO_LAYANAN_HUMAS, formatMenu(faqs)].join('\n\n'));
 }

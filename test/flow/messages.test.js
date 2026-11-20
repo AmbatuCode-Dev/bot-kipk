@@ -165,4 +165,13 @@ describe('pesanTidakDikenali', () => {
     expect(posisiMenu).toBeGreaterThan(posisiHumas);
     expect(INFO_LAYANAN_HUMAS).toContain('Humas');
   });
+
+  it('tetap muat dalam satu pesan walaupun FAQ aktifnya sangat banyak', () => {
+    const banyak = Array.from({ length: 200 }, (_x, i) => ({
+      ...faqs[0],
+      id: i + 1,
+      pertanyaan: `Pertanyaan contoh yang cukup panjang nomor ${i + 1}?`,
+    }));
+    expect(panjang(pesanTidakDikenali(banyak))).toBeLessThanOrEqual(BATAS_PANJANG);
+  });
 });
