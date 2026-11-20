@@ -25,7 +25,8 @@ Perbedaan respons itu disengaja. Fungsi serverless dihentikan begitu respons dik
 1. Buat Service Account di Google Cloud dan aktifkan Google Sheets API pada project yang sama.
 2. Buat kunci JSON, lalu isi `GOOGLE_SA_JSON` dengan isi file itu dalam satu baris, atau base64-nya (`base64 -w0 service-account.json`).
 3. Bagikan Sheet ke alamat `client_email` Service Account sebagai **Viewer**. Jangan bagikan akses Editor.
-4. Isi `SHEET_ID` dengan ID pada URL Sheet. Pastikan tab bernama `FAQ` (atau atur `SHEET_TAB`) dan baris pertama memuat header `ID, Kategori, Kata Kunci, Teks Jawaban, Aktif` berurutan. Format sel tidak berpengaruh karena nilai dibaca mentah: kolom `ID` boleh berformat angka, dan kolom `Aktif` boleh berupa checkbox atau teks `TRUE`/`FALSE`.
+4. Isi `SHEET_ID` dengan ID pada URL Sheet. Pastikan tab bernama `FAQ` (atau atur `SHEET_TAB`) dan baris pertama memuat header `ID, Kategori, Pertanyaan, Kata Kunci, Teks Jawaban, Aktif` berurutan. Format sel tidak berpengaruh karena nilai dibaca mentah: kolom `ID` boleh berformat angka, dan kolom `Aktif` boleh berupa checkbox atau teks `TRUE`/`FALSE`.
+   Bila menambahkan kolom `Pertanyaan` pada Sheet yang sudah berjalan, ubah Sheet-nya lebih dulu atau bersamaan dengan deploy. Header lama ditolak, sehingga bot memakai cache lama atau membalas pesan gangguan bila cache belum ada.
 5. Verifikasi dari komputer lokal: `pnpm cek:sheets`.
 
 ## 3. Track A: Vercel
@@ -119,5 +120,6 @@ Server berhenti dengan rapi saat menerima SIGTERM, dan `Restart=on-failure` meng
 | Log `signature_tidak_valid` | `WA_APP_SECRET` salah, atau body diubah oleh proxy sebelum sampai ke aplikasi |
 | Log `balasan_gagal` dengan `statusHttp` 400 dan kode 131030 | Nomor penerima belum terdaftar pada daftar penerima nomor uji |
 | Log `balasan_gagal` dengan `statusHttp` 401 atau kode 190 | `WA_ACCESS_TOKEN` salah atau kedaluwarsa |
-| Log `faq_pakai_cache_lama` atau `startup_faq_gagal` | Sheet belum dibagikan ke Service Account, nama tab salah, atau header berubah. Jalankan `pnpm cek:sheets` |
+| Log `faq_pakai_cache_lama` atau `startup_faq_gagal` | Sheet belum dibagikan ke Service Account, nama tab salah, atau header tidak sesuai (misalnya kolom `Pertanyaan` belum ditambahkan). Jalankan `pnpm cek:sheets` |
+| Log `baris_faq_dilewati` dengan alasan `pertanyaan_kosong` | Baris aktif belum diisi kolom `Pertanyaan`. Isi kolomnya, atau ubah `Aktif` menjadi `FALSE` |
 | Startup berhenti dengan `handleMessage belum tersedia` | `src/flow/handleMessage.js` belum mengekspor `handleMessage` |
