@@ -81,3 +81,29 @@ describe('handleMessage', () => {
     expect(hasil).toEqual({ body: pesanTidakDikenali(FAQS) });
   });
 });
+
+// Kontrak dengan Dev A: handler menjamin body berisi teks dan ≤4096 karakter,
+// karena WA Client hanya memvalidasi dan tidak memotong.
+describe('handleMessage: jaminan body untuk Dev A', () => {
+  const BANYAK = Array.from({ length: 300 }, (_x, i) => ({
+    id: i + 1,
+    kategori: `Kategori ${i % 7}`,
+    pertanyaan: `Pertanyaan contoh yang cukup panjang nomor ${i + 1}?`,
+    keywords: ['pencairan'],
+    jawaban: 'x'.repeat(5000),
+  }));
+
+  it.each([
+    ['bukan teks', ctx('', 'other'), storeBerisi(BANYAK)],
+    ['gagal ambil data', ctx('halo'), storeRusak()],
+    ['sapaan', ctx('halo'), storeBerisi(BANYAK)],
+    ['nomor menu', ctx('1'), storeBerisi(BANYAK)],
+    ['skor kata kunci', ctx('kapan pencairan'), storeBerisi(BANYAK)],
+    ['tidak dikenali', ctx('asdf'), storeBerisi(BANYAK)],
+  ])('jalur %s mengembalikan body tidak kosong dan ≤4096 karakter', async (_jalur, pesan, deps) => {
+    const { body } = await handleMessage(pesan, deps);
+    expect(typeof body).toBe('string');
+    expect(body.trim()).not.toBe('');
+    expect([...body].length).toBeLessThanOrEqual(4096);
+  });
+});
