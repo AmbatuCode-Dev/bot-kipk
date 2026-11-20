@@ -3,7 +3,7 @@ import { FaqStoreError, createFaqStore } from '../../src/data/faqStore.js';
 import { KOLOM_HEADER } from '../../src/data/parseFaq.js';
 
 const HEADER = [...KOLOM_HEADER];
-const BARIS_VALID = [HEADER, ['1', 'Pencairan', 'cair', 'jawaban satu', 'TRUE']];
+const BARIS_VALID = [HEADER, ['1', 'Pencairan', 'Kapan dana cair?', 'cair', 'jawaban satu', 'TRUE']];
 
 function loggerUji() {
   return { info: vi.fn(), warn: vi.fn() };
@@ -25,7 +25,7 @@ describe('createFaqStore.getAll', () => {
     jam.sekarang += 59_999;
     const kedua = await store.getAll();
 
-    expect(pertama).toEqual([{ id: 1, kategori: 'Pencairan', keywords: ['cair'], jawaban: 'jawaban satu' }]);
+    expect(pertama).toEqual([{ id: 1, kategori: 'Pencairan', pertanyaan: 'Kapan dana cair?', keywords: ['cair'], jawaban: 'jawaban satu' }]);
     expect(kedua).toBe(pertama);
     expect(ambil).toHaveBeenCalledTimes(1);
   });
@@ -33,7 +33,7 @@ describe('createFaqStore.getAll', () => {
   it('membaca ulang setelah TTL lewat dan memakai data terbaru', async () => {
     const ambil = vi.fn()
       .mockResolvedValueOnce(BARIS_VALID)
-      .mockResolvedValueOnce([HEADER, ['1', 'Pencairan', 'cair', 'jawaban baru', 'TRUE']]);
+      .mockResolvedValueOnce([HEADER, ['1', 'Pencairan', 'Kapan dana cair?', 'cair', 'jawaban baru', 'TRUE']]);
     const { store, jam } = siapkan({ ambilBaris: ambil });
 
     await store.getAll();
@@ -99,7 +99,7 @@ describe('createFaqStore.getAll', () => {
     const ambil = vi.fn()
       .mockResolvedValueOnce(BARIS_VALID)
       .mockRejectedValueOnce(new Error('mati'))
-      .mockResolvedValueOnce([HEADER, ['9', 'Baru', 'x', 'j9', 'TRUE']]);
+      .mockResolvedValueOnce([HEADER, ['9', 'Baru', 'Pertanyaan baru?', 'x', 'j9', 'TRUE']]);
     const { store, jam } = siapkan({ ambilBaris: ambil, jedaUlangMs: 1000 });
 
     await store.getAll();
@@ -130,7 +130,7 @@ describe('createFaqStore.getAll', () => {
   });
 
   it('memakai cache lama bila header Sheet berubah, bukan menyajikan kolom yang salah', async () => {
-    const rusak = [['ID', 'Kata Kunci', 'Kategori', 'Teks Jawaban', 'Aktif'], ['1', 'a', 'A', 'j', 'TRUE']];
+    const rusak = [['ID', 'Kategori', 'Kata Kunci', 'Pertanyaan', 'Teks Jawaban', 'Aktif'], ['1', 'A', 'a', 'P?', 'j', 'TRUE']];
     const ambil = vi.fn().mockResolvedValueOnce(BARIS_VALID).mockResolvedValueOnce(rusak);
     const { store, jam, logger } = siapkan({ ambilBaris: ambil });
 

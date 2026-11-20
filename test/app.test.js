@@ -8,7 +8,7 @@ import { createNodeListener } from '../src/webhook/nodeAdapter.js';
 import { envUji } from './helpers/env.js';
 
 const config = loadConfig(envUji());
-const BARIS_SHEET = [[...KOLOM_HEADER], ['1', 'Pencairan', 'cair, pencairan', 'Pencairan dilakukan bertahap.', 'TRUE'], ['2', 'Rahasia', 'x', 'jangan tampil', 'FALSE']];
+const BARIS_SHEET = [[...KOLOM_HEADER], ['1', 'Pencairan', 'Kapan dana KIP-K cair?', 'cair, pencairan', 'Pencairan dilakukan bertahap.', 'TRUE'], ['2', 'Rahasia', 'Pertanyaan nonaktif?', 'x', 'jangan tampil', 'FALSE']];
 
 function loggerSenyap() {
   return { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
@@ -50,7 +50,7 @@ describe('createApp', () => {
     expect(Object.keys(depsDiterima.faqStore)).toEqual(['getAll']);
     expect(Object.isFrozen(depsDiterima)).toBe(true);
     expect(await depsDiterima.faqStore.getAll()).toEqual([
-      { id: 1, kategori: 'Pencairan', keywords: ['cair', 'pencairan'], jawaban: 'Pencairan dilakukan bertahap.' },
+      { id: 1, kategori: 'Pencairan', pertanyaan: 'Kapan dana KIP-K cair?', keywords: ['cair', 'pencairan'], jawaban: 'Pencairan dilakukan bertahap.' },
     ]);
   });
 });
