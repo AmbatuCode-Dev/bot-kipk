@@ -17,6 +17,11 @@ export function kutipNamaTab(nama) {
 /**
  * Membuat fungsi pembaca tab FAQ dari Google Sheets (akses read-only).
  *
+ * Nilai dibaca mentah (UNFORMATTED_VALUE), bukan sebagaimana tampil di Sheet.
+ * Dengan begitu format sel dan locale Sheet, misalnya pemisah ribuan pada
+ * locale Indonesia yang mengubah angka 1000 menjadi "1.000", tidak memengaruhi
+ * kolom ID dan Aktif. Angka datang sebagai number dan checkbox sebagai boolean.
+ *
  * @param {object} opsi
  * @param {{ client_email: string, private_key: string }} opsi.credentials kredensial Service Account
  * @param {string} opsi.sheetId
@@ -35,7 +40,7 @@ export function createSheetsReader({ credentials, sheetId, sheetTab, klien }) {
 
   return async function ambilBaris() {
     const respons = await api.spreadsheets.values.get(
-      { spreadsheetId: sheetId, range: rentang, majorDimension: 'ROWS', valueRenderOption: 'FORMATTED_VALUE' },
+      { spreadsheetId: sheetId, range: rentang, majorDimension: 'ROWS', valueRenderOption: 'UNFORMATTED_VALUE' },
       { timeout: TIMEOUT_MS },
     );
     return respons.data.values ?? [];

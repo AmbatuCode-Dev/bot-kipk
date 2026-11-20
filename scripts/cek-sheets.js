@@ -1,6 +1,6 @@
 /**
  * Memeriksa koneksi ke Google Sheets memakai kredensial di .env.
- * Hanya menampilkan jumlah, ID, dan kategori FAQ. Isi jawaban tidak dicetak.
+ * Hanya menampilkan jumlah, ID, kategori, dan pertanyaan FAQ. Isi jawaban tidak dicetak.
  *
  * Pemakaian: pnpm cek:sheets
  */
@@ -24,7 +24,7 @@ try {
   const data = await store.getAll();
   console.log(`Berhasil membaca ${data.length} FAQ aktif dari tab "${config.google.sheetTab}".`);
   for (const faq of data) {
-    console.log(`  ${faq.id}. [${faq.kategori}] ${faq.keywords.length} kata kunci`);
+    console.log(`  ${faq.id}. [${faq.kategori}] ${faq.pertanyaan} (${faq.keywords.length} kata kunci)`);
   }
 } catch (err) {
   const sebab = err.cause ?? err;

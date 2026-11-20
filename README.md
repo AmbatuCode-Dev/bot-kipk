@@ -88,7 +88,8 @@ Tab `FAQ`, satu baris untuk satu pertanyaan:
 |---|---|
 | `ID` | Angka unik, sekaligus nomor menu yang diketik mahasiswa |
 | `Kategori` | Pengelompokan untuk daftar menu |
-| `Kata Kunci` | Dipisah koma, huruf kecil. Dicocokkan ke pesan yang sudah dinormalisasi |
+| `Pertanyaan` | Kalimat tanya yang tampil sebagai label nomor di daftar menu, misalnya "Kapan dana KIP-K cair?". Wajib diisi: baris aktif tanpa pertanyaan dilewati dan dicatat sebagai peringatan |
+| `Kata Kunci` | Dipisah koma. Huruf besar-kecil bebas, karena handler menormalisasi kata kunci dan pesan dengan aturan yang sama |
 | `Teks Jawaban` | Teks biasa, boleh beberapa baris. Jangan isi data pribadi atau data sensitif mahasiswa |
 | `Aktif` | `TRUE` atau `FALSE`. Baris `FALSE` dilewati bot |
 

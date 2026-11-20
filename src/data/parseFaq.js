@@ -1,5 +1,5 @@
 /** Urutan dan nama kolom tab FAQ. Baris pertama di Sheet harus persis seperti ini. */
-export const KOLOM_HEADER = Object.freeze(['ID', 'Kategori', 'Kata Kunci', 'Teks Jawaban', 'Aktif']);
+export const KOLOM_HEADER = Object.freeze(['ID', 'Kategori', 'Pertanyaan', 'Kata Kunci', 'Teks Jawaban', 'Aktif']);
 
 const POLA_ID = /^\d{1,9}$/;
 const PANJANG_JAWABAN_PERINGATAN = 4096;
@@ -11,9 +11,15 @@ export class FaqFormatError extends Error {
   }
 }
 
+const KOLOM = Object.freeze({ id: 0, kategori: 1, pertanyaan: 2, kataKunci: 3, jawaban: 4, aktif: 5 });
+
 function sel(baris, indeks) {
   const nilai = baris[indeks];
   return nilai === undefined || nilai === null ? '' : String(nilai);
+}
+
+function rapikanSpasi(teks) {
+  return teks.replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -24,13 +30,16 @@ function sel(baris, indeks) {
  *   sehingga bot tidak menjawab dari kolom yang salah.
  * - Baris kosong dan baris dengan Aktif selain TRUE dilewati tanpa peringatan.
  * - Baris aktif dengan ID kosong, bukan angka, atau dobel (yang dipakai baris
- *   paling atas), serta tanpa jawaban, dilewati dan dicatat sebagai peringatan.
+ *   paling atas), serta tanpa pertanyaan atau tanpa jawaban, dilewati dan
+ *   dicatat sebagai peringatan.
+ * - Kategori dan Pertanyaan dipakai sebagai teks menu, jadi spasi berlebih dan
+ *   baris baru di dalamnya dirapikan menjadi satu spasi.
  * - Kata kunci dipecah per koma dan di-trim. Normalisasi huruf dilakukan Dev B.
  * - Hasil diurutkan menurut ID dan seluruhnya dibekukan.
  *
  * @param {unknown[][]} baris hasil values.get, termasuk baris header
  * @param {{ logger: { warn: Function } }} opsi
- * @returns {ReadonlyArray<Readonly<{ id: number, kategori: string, keywords: readonly string[], jawaban: string }>>}
+ * @returns {ReadonlyArray<Readonly<{ id: number, kategori: string, pertanyaan: string, keywords: readonly string[], jawaban: string }>>}
  * @throws {FaqFormatError} bila header tidak ada atau tidak sesuai
  */
 export function parseFaq(baris, { logger }) {
@@ -52,9 +61,9 @@ export function parseFaq(baris, { logger }) {
     const row = Array.isArray(baris[i]) ? baris[i] : [];
 
     if (row.every((_c, indeks) => sel(row, indeks).trim() === '')) continue;
-    if (sel(row, 4).trim().toUpperCase() !== 'TRUE') continue;
+    if (sel(row, KOLOM.aktif).trim().toUpperCase() !== 'TRUE') continue;
 
-    const idMentah = sel(row, 0).trim();
+    const idMentah = sel(row, KOLOM.id).trim();
     if (!POLA_ID.test(idMentah) || Number(idMentah) < 1) {
       logger.warn('baris_faq_dilewati', { baris: nomorBaris, alasan: 'id_tidak_valid' });
       continue;
@@ -66,7 +75,13 @@ export function parseFaq(baris, { logger }) {
       continue;
     }
 
-    const jawaban = sel(row, 3).trim();
+    const pertanyaan = rapikanSpasi(sel(row, KOLOM.pertanyaan));
+    if (pertanyaan === '') {
+      logger.warn('baris_faq_dilewati', { baris: nomorBaris, alasan: 'pertanyaan_kosong', id });
+      continue;
+    }
+
+    const jawaban = sel(row, KOLOM.jawaban).trim();
     if (jawaban === '') {
       logger.warn('baris_faq_dilewati', { baris: nomorBaris, alasan: 'jawaban_kosong', id });
       continue;
@@ -79,9 +94,10 @@ export function parseFaq(baris, { logger }) {
     hasil.push(
       Object.freeze({
         id,
-        kategori: sel(row, 1).trim(),
+        kategori: rapikanSpasi(sel(row, KOLOM.kategori)),
+        pertanyaan,
         keywords: Object.freeze(
-          sel(row, 2)
+          sel(row, KOLOM.kataKunci)
             .split(',')
             .map((kata) => kata.trim())
             .filter((kata) => kata !== ''),
