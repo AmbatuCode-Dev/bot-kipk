@@ -51,4 +51,18 @@ describe('handleMessage', () => {
     const hasil = await handleMessage(ctx(teks), storeBerisi(FAQS));
     expect(hasil).toEqual({ body: formatJawaban(FAQS[1]) });
   });
+
+  it.each([
+    ['Kapan pencairan KIP-K?', 1],
+    ['syarat daftar-ulang apa aja', 2],
+    ['rekening bank saya diblokir', 3],
+  ])('membalas "%s" dengan jawaban FAQ %i yang skornya tertinggi', async (teks, id) => {
+    const hasil = await handleMessage(ctx(teks), storeBerisi(FAQS));
+    expect(hasil).toEqual({ body: formatJawaban(FAQS[id - 1]) });
+  });
+
+  it('menjawab pertanyaan yang diawali sapaan, bukan membalas menu', async () => {
+    const hasil = await handleMessage(ctx('Halo kak, kapan dana cair?'), storeBerisi(FAQS));
+    expect(hasil).toEqual({ body: formatJawaban(FAQS[0]) });
+  });
 });
