@@ -84,3 +84,21 @@ const PENGANTAR_MENU = 'Ketik nomor pertanyaan di bawah ini, atau tulis pertanya
 export function pesanSapaan(faqs) {
   return batasiPanjang([SALAM, NOTICE_PRIVASI, PENGANTAR_MENU, formatMenu(faqs)].join('\n\n'));
 }
+
+/** Draf. Jam layanan dan kontak admin Humas ditambahkan setelah ada dari Analyst. */
+export const INFO_LAYANAN_HUMAS =
+  'Kalau pertanyaanmu belum ada di daftar, silakan hubungi admin Humas Forum KIP-Kuliah UNJ.';
+
+const PEMBUKA_TIDAK_DIKENALI =
+  'Maaf, bot belum mengerti pertanyaanmu. Coba tulis dengan kata lain, atau ketik nomor pertanyaan dari daftar di bawah.';
+
+/**
+ * Balasan bila pesan bukan sapaan, bukan nomor menu, dan tidak cocok dengan
+ * kata kunci FAQ mana pun. Menu berada paling akhir, jadi bila terlalu panjang
+ * hanya ujung menu yang terpotong.
+ * @param {ReadonlyArray<{ id: number, kategori: string, pertanyaan: string }>} faqs hasil faqStore.getAll()
+ * @returns {string}
+ */
+export function pesanTidakDikenali(faqs) {
+  return batasiPanjang([PEMBUKA_TIDAK_DIKENALI, INFO_LAYANAN_HUMAS, formatMenu(faqs)].join('\n\n'));
+}

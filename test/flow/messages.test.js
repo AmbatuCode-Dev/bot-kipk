@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BATAS_PANJANG,
+  INFO_LAYANAN_HUMAS,
   NOTICE_PRIVASI,
   PESAN_BUKAN_TEKS,
   PESAN_GANGGUAN,
@@ -10,6 +11,7 @@ import {
   formatJawaban,
   formatMenu,
   pesanSapaan,
+  pesanTidakDikenali,
 } from '../../src/flow/messages.js';
 
 // Cara menghitung sama dengan WA Client (Dev A): per code point, bukan per unit UTF-16
@@ -147,5 +149,29 @@ describe('pesanSapaan', () => {
       pertanyaan: `Pertanyaan contoh yang cukup panjang nomor ${i + 1}?`,
     }));
     expect(panjang(pesanSapaan(banyak))).toBeLessThanOrEqual(BATAS_PANJANG);
+  });
+});
+
+describe('pesanTidakDikenali', () => {
+  const faqs = [
+    { id: 1, kategori: 'Pencairan', pertanyaan: 'Kapan dana cair?', keywords: ['cair'], jawaban: 'Jawaban' },
+  ];
+
+  it('mengarahkan ke admin Humas lalu menampilkan daftar menu', () => {
+    const pesan = pesanTidakDikenali(faqs);
+    const posisiHumas = pesan.indexOf(INFO_LAYANAN_HUMAS);
+    const posisiMenu = pesan.indexOf(formatMenu(faqs));
+    expect(posisiHumas).toBeGreaterThan(0);
+    expect(posisiMenu).toBeGreaterThan(posisiHumas);
+    expect(INFO_LAYANAN_HUMAS).toContain('Humas');
+  });
+
+  it('tetap muat dalam satu pesan walaupun FAQ aktifnya sangat banyak', () => {
+    const banyak = Array.from({ length: 200 }, (_x, i) => ({
+      ...faqs[0],
+      id: i + 1,
+      pertanyaan: `Pertanyaan contoh yang cukup panjang nomor ${i + 1}?`,
+    }));
+    expect(panjang(pesanTidakDikenali(banyak))).toBeLessThanOrEqual(BATAS_PANJANG);
   });
 });
