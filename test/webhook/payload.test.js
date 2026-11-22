@@ -37,6 +37,14 @@ describe('ekstrakPesan', () => {
     ]);
   });
 
+  it('mengabaikan reaksi emoji tanpa menghitungnya sebagai pesan yang dilewati', () => {
+    const reaksi = { from: '6281234567890', id: 'wamid.RX', timestamp: '1763433602', type: 'reaction', reaction: { message_id: 'wamid.AAA', emoji: '👍' } };
+    const { pesan, dilewati } = ekstrakPesan(payload({ pesan: [reaksi, pesanTeks] }), NOMOR_BOT);
+
+    expect(dilewati).toBe(0);
+    expect(pesan.map((p) => p.messageId)).toEqual(['wamid.AAA']);
+  });
+
   it('menandai pesan selain teks sebagai other dengan text kosong', () => {
     const gambar = { from: '6281234567890', id: 'wamid.BBB', timestamp: '1763433601', type: 'image', image: { id: 'x', caption: 'rahasia' } };
     const { pesan } = ekstrakPesan(payload({ pesan: [gambar] }), NOMOR_BOT);

@@ -5,7 +5,8 @@ const POLA_NOMOR = /^\d{5,20}$/;
  * Mengubah payload webhook WhatsApp menjadi daftar ctx untuk handler percakapan.
  *
  * Entri tanpa `messages` (misalnya status delivered dan read) tidak menghasilkan
- * apa-apa. Pesan yang bentuknya tidak lengkap atau ditujukan ke nomor bot lain
+ * apa-apa. Reaksi emoji terhadap pesan juga diabaikan, karena bukan pertanyaan
+ * dan tidak pantas dibalas. Pesan yang bentuknya tidak lengkap atau ditujukan ke nomor bot lain
  * dilewati dan dihitung pada `dilewati`.
  *
  * @param {unknown} payload hasil JSON.parse dari body webhook
@@ -31,6 +32,7 @@ export function ekstrakPesan(payload, phoneNumberId) {
       }
 
       for (const pesan of nilai.messages) {
+        if (pesan?.type === 'reaction') continue;
         const ctx = bentukCtx(pesan);
         if (ctx) hasil.pesan.push(ctx);
         else hasil.dilewati += 1;
