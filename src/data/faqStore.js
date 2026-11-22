@@ -17,12 +17,14 @@ export class FaqStoreError extends Error {
  * - Panggilan bersamaan saat cache kedaluwarsa berbagi satu permintaan ke Sheets.
  * - Jika pembacaan gagal tetapi cache lama masih ada, cache lama dipakai dan
  *   percobaan berikutnya ditunda sejenak agar Sheets tidak dibanjiri.
- * - Jika gagal dan belum pernah ada cache, getAll() melempar FaqStoreError.
+ * - Jika gagal dan belum pernah ada cache, penyebabnya dicatat sebagai error lalu
+ *   getAll() melempar FaqStoreError. Pencatatan dilakukan di sini karena handler
+ *   percakapan hanya membalas pesan gangguan dan tidak mencatat penyebabnya.
  *
  * @param {object} opsi
  * @param {() => Promise<unknown[][]>} opsi.ambilBaris pembaca Sheets
  * @param {number} opsi.ttlMs umur cache dalam milidetik. 0 berarti selalu baca.
- * @param {{ info: Function, warn: Function }} opsi.logger
+ * @param {{ info: Function, warn: Function, error: Function }} opsi.logger
  * @param {number} [opsi.jedaUlangMs]
  * @param {() => number} [opsi.now]
  */
@@ -64,6 +66,7 @@ export function createFaqStore({ ambilBaris, ttlMs, logger, jedaUlangMs = JEDA_U
           logger.warn('faq_pakai_cache_lama', { umurDetik: Math.round((now() - cache.diambilPada) / 1000), ...ringkasError(err) });
           return cache.data;
         }
+        logger.error('faq_gagal_tanpa_cache', ringkasError(err));
         throw new FaqStoreError('Data FAQ tidak bisa dibaca dan belum ada cache', { cause: err });
       }
     },

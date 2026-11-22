@@ -6,7 +6,7 @@ const HEADER = [...KOLOM_HEADER];
 const BARIS_VALID = [HEADER, ['1', 'Pencairan', 'Kapan dana cair?', 'cair', 'jawaban satu', 'TRUE']];
 
 function loggerUji() {
-  return { info: vi.fn(), warn: vi.fn() };
+  return { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
 }
 
 function siapkan({ ttlMs = 60_000, jedaUlangMs = 15_000, ambilBaris } = {}) {
@@ -119,6 +119,27 @@ describe('createFaqStore.getAll', () => {
 
     expect(err).toBeInstanceOf(FaqStoreError);
     expect(err.cause).toBe(sebab);
+  });
+
+  it('mencatat error beserta penyebabnya bila gagal dan belum ada cache', async () => {
+    const sebab = Object.assign(new Error('The caller does not have permission'), { code: 403 });
+    const { store, logger } = siapkan({ ambilBaris: vi.fn(async () => { throw sebab; }) });
+
+    await expect(store.getAll()).rejects.toBeInstanceOf(FaqStoreError);
+
+    expect(logger.error).toHaveBeenCalledWith('faq_gagal_tanpa_cache', expect.objectContaining({ pesanError: 'The caller does not have permission', kodeError: 403 }));
+  });
+
+  it('tidak mencatat error, hanya peringatan, selama cache lama masih bisa dipakai', async () => {
+    const ambil = vi.fn().mockResolvedValueOnce(BARIS_VALID).mockRejectedValueOnce(new Error('Sheets 503'));
+    const { store, jam, logger } = siapkan({ ambilBaris: ambil });
+
+    await store.getAll();
+    jam.sekarang += 120_000;
+    await store.getAll();
+
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith('faq_pakai_cache_lama', expect.anything());
   });
 
   it('mencoba lagi pada panggilan berikutnya bila belum ada cache', async () => {
