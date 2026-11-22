@@ -95,6 +95,8 @@ Tab `FAQ`, satu baris untuk satu pertanyaan:
 
 Baris header dikunci (protect range), dan urutan kolom tidak boleh berubah. Service Account dibagikan ke Sheet sebagai **Viewer**.
 
+Cara mengisi dan merawat Sheet untuk Divisi Humas (tanpa coding): [`docs/panduan-admin.md`](docs/panduan-admin.md).
+
 ## Environment Variables
 
 Salin `.env.example` menjadi `.env`, lalu isi variabel berikut:
