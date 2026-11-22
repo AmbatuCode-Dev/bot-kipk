@@ -7,7 +7,7 @@ Prototipe bot WhatsApp yang menjawab pertanyaan yang sering diajukan (FAQ) mahas
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=for-the-badge&logo=googlesheets&logoColor=white)
 
-> **Status:** tahap pengembangan. Sisi Dev A (webhook, WA Client, koneksi Google Sheets, FAQ Store, entry Vercel dan VPS) sudah diimplementasikan. Alur percakapan (`src/flow/`) masih dikerjakan Dev B.
+> **Status:** tahap pengembangan. Sisi Dev A (webhook, WA Client, koneksi Google Sheets, FAQ Store, entry Vercel dan VPS) dan alur percakapan Dev B (`src/flow/`) sudah diimplementasikan. Teks balasan masih draf sampai ada teks final dari Divisi Humas, dan integrasi dengan kredensial asli belum dilakukan.
 
 ## Fitur
 
@@ -167,8 +167,6 @@ pnpm dev
 ```
 
 Server mendengarkan di `http://localhost:3000`. Untuk menerima webhook dari Meta, buka tunnel (misalnya `ngrok http 3000`) lalu isi Callback URL dengan `https://<alamat-tunnel>/webhook`. Cek kesehatan server di `/healthz`.
-
-> Server baru bisa berjalan setelah `handleMessage` diekspor dari `src/flow/handleMessage.js` (Dev B). Sebelum itu, startup berhenti dengan pesan yang menjelaskannya.
 
 ## Deploy dan Keamanan
 
