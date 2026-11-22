@@ -187,9 +187,10 @@ Server mendengarkan di `http://localhost:3000`. Untuk menerima webhook dari Meta
 - [x] Webhook: verifikasi GET dan signature HMAC
 - [x] WA Client: `sendText()` ke Cloud API
 - [x] Koneksi Google Sheets dan FAQ Store dengan cache
-- [ ] Handler percakapan: normalisasi, menu, skor kata kunci
-- [ ] Teks sapaan, fallback, dan notice privasi
-- [ ] Unit test Vitest untuk `flow/*`
+- [x] Handler percakapan: normalisasi, menu, skor kata kunci
+- [x] Teks sapaan, fallback, dan notice privasi (draf)
+- [ ] Teks final dari Divisi Humas: kalimat balasan, kata sapaan, jam layanan dan kontak admin
+- [x] Unit test Vitest untuk `flow/*`
 - [ ] Integrasi end-to-end dan deploy ke Vercel Hobby
 - [ ] QA dan UAT bersama Forum KIP-Kuliah UNJ
 
