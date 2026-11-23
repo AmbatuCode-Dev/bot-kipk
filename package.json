@@ -13,6 +13,7 @@
     "dev": "node --watch --env-file-if-exists=.env server.js",
     "cek:sheets": "node --env-file-if-exists=.env scripts/cek-sheets.js",
     "cek:wa": "node --env-file-if-exists=.env scripts/cek-wa.js",
+    "chat": "node scripts/chat.js",
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },

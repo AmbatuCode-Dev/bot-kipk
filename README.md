@@ -57,6 +57,9 @@ server.js                   [A] entry VPS (Track B), node:http
 scripts/
   cek-sheets.js             [A] cek koneksi Google Sheets
   cek-wa.js                 [A] kirim pesan uji lewat Cloud API
+  chat.js                   [B] simulator chat lokal dari CSV
+  csv.js                    [B] pembaca CSV ekspor Sheet
+  contoh-faq.csv            [B] FAQ contoh untuk simulator
 src/
   app.js                    [A] menyusun semua komponen (dipakai kedua entry)
   config.js                 [A] baca dan validasi .env
@@ -154,6 +157,14 @@ Atau jalankan test dalam mode watch selama development:
 ```bash
 pnpm test:watch
 ```
+
+Coba alur percakapan di terminal, tanpa WhatsApp dan tanpa kredensial:
+
+```bash
+pnpm chat
+```
+
+Secara bawaan simulator memakai `scripts/contoh-faq.csv`. Untuk mencoba isi FAQ sendiri, unduh tab FAQ lewat **File > Download > Comma-separated values (.csv)** di Google Sheets, lalu jalankan `pnpm chat path/ke/berkas.csv`. Ketik `/bukan-teks` untuk meniru stiker atau gambar, dan `keluar` untuk berhenti. Setelah CSV diubah, jalankan ulang simulatornya.
 
 Pastikan koneksi ke Google Sheets dan WhatsApp sudah benar:
 
