@@ -7,5 +7,38 @@
  * @returns {string[][]}
  */
 export function parseCsv(teks) {
-  return teks.split('\n').map((baris) => baris.split(','));
+  const hasil = [];
+  let baris = [];
+  let sel = '';
+  let dalamKutip = false;
+
+  for (let i = 0; i < teks.length; i += 1) {
+    const c = teks[i];
+    if (dalamKutip) {
+      if (c === '"' && teks[i + 1] === '"') {
+        sel += '"';
+        i += 1;
+      } else if (c === '"') {
+        dalamKutip = false;
+      } else {
+        sel += c;
+      }
+    } else if (c === '"') {
+      dalamKutip = true;
+    } else if (c === ',') {
+      baris.push(sel);
+      sel = '';
+    } else if (c === '\n') {
+      baris.push(sel);
+      hasil.push(baris);
+      baris = [];
+      sel = '';
+    } else {
+      sel += c;
+    }
+  }
+
+  baris.push(sel);
+  hasil.push(baris);
+  return hasil;
 }
