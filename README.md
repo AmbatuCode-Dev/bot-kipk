@@ -7,7 +7,7 @@ Prototipe bot WhatsApp yang menjawab pertanyaan yang sering diajukan (FAQ) mahas
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Google Sheets](https://img.shields.io/badge/Google_Sheets-34A853?style=for-the-badge&logo=googlesheets&logoColor=white)
 
-> **Status:** tahap pengembangan. Sisi Dev A (webhook, WA Client, koneksi Google Sheets, FAQ Store, entry Vercel dan VPS) sudah diimplementasikan. Alur percakapan (`src/flow/`) masih dikerjakan Dev B.
+> **Status:** tahap pengembangan. Sisi Dev A (webhook, WA Client, koneksi Google Sheets, FAQ Store, entry Vercel dan VPS) dan alur percakapan Dev B (`src/flow/`) sudah diimplementasikan. Teks balasan masih draf sampai ada teks final dari Divisi Humas, dan integrasi dengan kredensial asli belum dilakukan.
 
 ## Fitur
 
@@ -95,6 +95,8 @@ Tab `FAQ`, satu baris untuk satu pertanyaan:
 
 Baris header dikunci (protect range), dan urutan kolom tidak boleh berubah. Service Account dibagikan ke Sheet sebagai **Viewer**.
 
+Cara mengisi dan merawat Sheet untuk Divisi Humas (tanpa coding): [`docs/panduan-admin.md`](docs/panduan-admin.md).
+
 ## Environment Variables
 
 Salin `.env.example` menjadi `.env`, lalu isi variabel berikut:
@@ -168,8 +170,6 @@ pnpm dev
 
 Server mendengarkan di `http://localhost:3000`. Untuk menerima webhook dari Meta, buka tunnel (misalnya `ngrok http 3000`) lalu isi Callback URL dengan `https://<alamat-tunnel>/webhook`. Cek kesehatan server di `/healthz`.
 
-> Server baru bisa berjalan setelah `handleMessage` diekspor dari `src/flow/handleMessage.js` (Dev B). Sebelum itu, startup berhenti dengan pesan yang menjelaskannya.
-
 ## Deploy dan Keamanan
 
 - Langkah deploy Vercel (Track A) dan VPS (Track B), serta setup webhook di Meta: [`docs/deploy.md`](docs/deploy.md)
@@ -189,9 +189,10 @@ Server mendengarkan di `http://localhost:3000`. Untuk menerima webhook dari Meta
 - [x] Webhook: verifikasi GET dan signature HMAC
 - [x] WA Client: `sendText()` ke Cloud API
 - [x] Koneksi Google Sheets dan FAQ Store dengan cache
-- [ ] Handler percakapan: normalisasi, menu, skor kata kunci
-- [ ] Teks sapaan, fallback, dan notice privasi
-- [ ] Unit test Vitest untuk `flow/*`
+- [x] Handler percakapan: normalisasi, menu, skor kata kunci
+- [x] Teks sapaan, fallback, dan notice privasi (draf)
+- [ ] Teks final dari Divisi Humas: kalimat balasan, kata sapaan, jam layanan dan kontak admin
+- [x] Unit test Vitest untuk `flow/*`
 - [ ] Integrasi end-to-end dan deploy ke Vercel Hobby
 - [ ] QA dan UAT bersama Forum KIP-Kuliah UNJ
 
