@@ -6,7 +6,8 @@
  * @param {string} teks
  * @returns {string[][]}
  */
-export function parseCsv(teks) {
+export function parseCsv(masukan) {
+  const teks = masukan.startsWith('﻿') ? masukan.slice(1) : masukan;
   const hasil = [];
   let baris = [];
   let sel = '';
@@ -28,6 +29,8 @@ export function parseCsv(teks) {
     } else if (c === ',') {
       baris.push(sel);
       sel = '';
+    } else if (c === '\r') {
+      // Akhir baris Windows (\r\n): cukup \n yang menutup baris
     } else if (c === '\n') {
       baris.push(sel);
       hasil.push(baris);
@@ -38,7 +41,10 @@ export function parseCsv(teks) {
     }
   }
 
-  baris.push(sel);
-  hasil.push(baris);
+  // Berkas yang diakhiri baris baru tidak menyisakan baris kosong
+  if (baris.length > 0 || sel !== '') {
+    baris.push(sel);
+    hasil.push(baris);
+  }
   return hasil;
 }
