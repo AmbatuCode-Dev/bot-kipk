@@ -1,0 +1,6 @@
+ID,Kategori,Pertanyaan,Kata Kunci,Teks Jawaban,Aktif
+1,Pencairan,Kapan dana KIP-K cair?,"pencairan, cair, kapan cair, kpn cair","(Contoh) Jawaban tentang jadwal pencairan dari Divisi Humas.",TRUE
+2,Pencairan,Kenapa dana belum masuk rekening?,"belum masuk, belum cair, rekening","(Contoh) Jawaban tentang dana yang belum masuk.
+Jawaban boleh lebih dari satu baris.",TRUE
+3,Syarat,Apa syarat daftar ulang?,"syarat, daftar ulang, berkas","(Contoh) Jawaban tentang syarat daftar ulang.",TRUE
+4,Kontak,Siapa yang bisa dihubungi?,"kontak, admin, hubungi","(Contoh) FAQ ini nonaktif sehingga tidak muncul di menu.",FALSE
